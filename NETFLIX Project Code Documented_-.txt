@@ -1,0 +1,192 @@
+﻿NETFLIX Project :-
+Netflix Customer & Content Analytics.
+
+
+Business Case Study :-
+
+
+1. Subscription & Revenue Analysis :-        
+
+
+• What is the monthly subscriber growth trend?
+ code:-    
+     SELECT 
+         DATE_TRUNC('month', start_date::DATE)::DATE AS month_start,
+         COUNT(DISTINCT customer_id) AS sub_count
+     FROM subscriptions
+     WHERE start_date IS NOT NULL AND start_date <> ''
+     GROUP BY month_start
+    ORDER BY month_start ASC;
+
+
+• What is the Monthly Recurring Revenue (MRR)?
+Code:-
+  SELECT 
+     DATE_TRUNC('month', start_date::DATE)::DATE AS month_start,
+     SUM(CAST(monthly_price AS int)) AS Revenue
+  FROM subscriptions
+  WHERE start_date IS NOT NULL AND start_date <> '' AND LOWER(status) = 'active'
+  GROUP BY month_start
+  ORDER BY month_start ASC;
+
+
+• Which subscription plan generates the highest revenue?
+Code:-
+    SELECT 
+    upper(plan) as plan,
+    SUM(CAST(monthly_price AS int)) AS Revenue
+FROM subscriptions
+WHERE start_date IS NOT NULL AND start_date <> '' AND LOWER(status) = 'active'
+GROUP BY 1
+ORDER BY 1 ASC;
+
+
+• Which plan has the highest number of subscribers?
+Code:- 
+   SELECT 
+    upper(plan) as plan,
+    count(customer_id) as sb_cnt
+FROM subscriptions
+WHERE start_date IS NOT NULL AND start_date <> '' AND LOWER(status) = 'active'
+GROUP BY 1
+ORDER BY 1 ASC;
+
+
+• What is the Average Revenue Per User (ARPU)?
+Code:- 
+    SELECT 
+    sum(cast(monthly_price as int))/count(distinct customer_id) as avg_rev_per_users    
+FROM subscriptions
+WHERE start_date IS NOT NULL AND start_date <> '' AND LOWER(status) = 'active';
+
+
+2. Customer Analysis:-
+
+
+• How many unique customers are there?
+Code:- 
+   select count(distinct customer_id) as customer_count 
+from customers;
+
+
+• What is the customer distribution by age group?
+code:-
+• Which gender has the highest number of customers?
+code:-
+• Which countries have the largest customer base?
+code:-
+• Which acquisition channel brings the most customers?
+code:-
+TABLE CODE :-
+
+
+create a table and import all csv file data in sql.
+
+
+ 1.IF EXIST IN CUSTOMERS TABLE TO REMOVE.
+DROP TABLE IF EXISTS customers CASCADE;
+
+
+-- CREATE NEW CUSTOMERS TABLE.
+CREATE TABLE customers (
+    customer_id VARCHAR(50) PRIMARY KEY,
+    customer_name VARCHAR(100),
+    email VARCHAR(100),
+    dob VARCHAR(50),               
+    gender VARCHAR(20),
+    country VARCHAR(50),
+    signup_date VARCHAR(50),       
+    acquisition_channel VARCHAR(100),
+    device_type VARCHAR(100),
+    preferred_language VARCHAR(50),
+    customer_status VARCHAR(50),
+    churn_date VARCHAR(50),        
+    churn_reason VARCHAR(255)     
+);
+
+
+ALTER TABLE customers 
+    ALTER COLUMN dob TYPE DATE USING TO_DATE(dob, 'DD-MM-YYYY'),
+    ALTER COLUMN signup_date TYPE DATE USING TO_DATE(signup_date, 'DD-MM-YYYY'),
+    ALTER COLUMN churn_date TYPE DATE USING TO_DATE(churn_date, 'DD-MM-YYYY');
+
+
+-- CREATE NEW CONTENT TABLE.
+
+
+2.DROP TABLE IF EXISTS content CASCADE;
+
+
+
+
+CREATE TABLE content (
+    title_id VARCHAR(50) PRIMARY KEY,
+    title_name VARCHAR(255),
+    content_type VARCHAR(50),
+    genre VARCHAR(100),
+    secondary_genre VARCHAR(100),   
+    release_year INT,
+    country_of_origin VARCHAR(100),
+    language VARCHAR(100),
+    maturity_rating VARCHAR(20),
+    runtime_minutes INT,           
+    seasons INT,                   
+        episodes INT,                   
+    imdb_rating NUMERIC,
+    critic_score NUMERIC,
+    is_original VARCHAR(10)         
+);
+
+
+-- CREATE NEW subscritions TABLE.
+
+
+3.DROP TABLE IF EXISTS subscriptions CASCADE;
+
+
+
+
+CREATE TABLE subscriptions (
+    subscription_id VARCHAR(50) PRIMARY KEY,
+    customer_id VARCHAR(50),
+    plan VARCHAR(50),
+    monthly_price NUMERIC,
+    start_date VARCHAR(50),        
+    end_date VARCHAR(50),          
+    status VARCHAR(50),
+    billing_cycle VARCHAR(50),     
+    payment_method VARCHAR(50),    
+    payment_status VARCHAR(50),
+    transaction_amount NUMERIC,
+    discount_code VARCHAR(50),
+    auto_renew VARCHAR(10),        
+    cancel_reason TEXT             
+);
+
+
+-- CREATE NEW views TABLE.
+
+
+4.DROP TABLE IF EXISTS views CASCADE;
+
+
+
+
+CREATE TABLE views (
+    view_id VARCHAR(50) PRIMARY KEY,
+    customer_id VARCHAR(50),
+    title_id VARCHAR(50),
+    watch_date VARCHAR(50),        
+    watch_minutes NUMERIC,         
+        completion_pct NUMERIC,        
+    device VARCHAR(50),
+    profile_type VARCHAR(50),
+    playback_quality VARCHAR(50),
+    buffering_events INT,       
+    customer_rating INT,        
+    liked VARCHAR(20),            
+    watch_again VARCHAR(20),       
+    recommendation_shown VARCHAR(20), 
+    recommendation_clicked VARCHAR(20), 
+    search_category VARCHAR(100)  
+);
