@@ -1,8 +1,5 @@
 # 🎥 Netflix Business Performance Data Analysis (SQL + Excel)
 
-![Project Status](https://shields.io)
-![Tech](https://shields.io)
-
 ## 📌 Project Overview
 This is an End-to-End Data Analyst Portfolio Project analyzing a comprehensive dataset of 60,000 Netflix subscribers. The primary objective of this project is to solve real-world business challenges—such as customer churn, revenue leakage, plan-wise tier performance, and user demographics—by leveraging data-driven insights and presenting them via an interactive executive dashboard.
 
